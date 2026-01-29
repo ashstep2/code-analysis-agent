@@ -102,10 +102,10 @@ export async function customBashWorkflow(
 }
 
 /**
- * Wrap a promise with a timeout. Returns null if timeout expires.
+ * Wrap a promise-like value with a timeout. Returns null if timeout expires.
  */
 async function withTimeout<T>(
-  promise: Promise<T>,
+  promiseLike: PromiseLike<T>,
   timeoutMs: number,
   timeoutMessage: string
 ): Promise<T | null> {
@@ -121,7 +121,7 @@ async function withTimeout<T>(
   });
 
   try {
-    const result = await Promise.race([promise, timeoutPromise]);
+    const result = await Promise.race([Promise.resolve(promiseLike), timeoutPromise]);
     clearTimeout(timeoutId!);
     return result;
   } catch (error) {
